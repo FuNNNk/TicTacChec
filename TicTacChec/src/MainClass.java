@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Scanner;
 
 public class MainClass {
@@ -29,6 +30,25 @@ public class MainClass {
 			
 			s=MinMax.getBestMoveWhitePrunning(s, 3);
 			printMatrix(s);
+			State finalS = s;
+			Runnable r=new Runnable() {
+				@Override
+				public void run() {
+					Interfata inf=new Interfata(finalS);
+					JFrame f = new JFrame("ChessChamp");
+					f.add(inf.getGui());
+
+					f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+					f.setLocationByPlatform(true);
+
+					f.pack();
+					f.setMinimumSize(f.getSize());
+					f.setVisible(true);
+				}
+			};
+			SwingUtilities.invokeLater(r);
+
 			if(State.isFinal(s))
 				break;
 			System.out.print("Piesa care va fi mutata:");
@@ -45,27 +65,7 @@ public class MainClass {
 		keyboard.close();
 
 
-//		Runnable r=new Runnable() {
-//			@Override
-//			public void run() {
-//				Interfata inf=new Interfata();
-//				JFrame f = new JFrame("ChessChamp");
-//				f.add(inf.getGui());
-//				// Ensures JVM closes after frame(s) closed and
-//				// all non-daemon threads are finished
-//				f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//				// See https://stackoverflow.com/a/7143398/418556 for demo.
-//				f.setLocationByPlatform(true);
-//
-//				// ensures the frame is the minimum size it needs to be
-//				// in order display the components within it
-//				f.pack();
-//				// ensures the minimum size is enforced.
-//				f.setMinimumSize(f.getSize());
-//				f.setVisible(true);
-//			}
-//		};
-//		SwingUtilities.invokeLater(r);
+
 
 
 			

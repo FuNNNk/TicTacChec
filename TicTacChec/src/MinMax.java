@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.util.Pair;
 
 public class MinMax {
 

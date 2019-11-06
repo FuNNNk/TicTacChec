@@ -14,7 +14,7 @@ public class Interfata {
 
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
     private JButton[][] chessBoardSquares = new JButton[4][4];
-    private Image[][] chessPieceImages = new Image[2][6];
+    private Image[] chessPieceImages = new Image[9];
     private JPanel chessBoard;
     private final JLabel message = new JLabel(
             "Chess Champ is ready to play!");
@@ -24,11 +24,10 @@ public class Interfata {
     public static final int[] STARTING_ROW = {
             ROOK, KNIGHT, BISHOP, PAWN
     };
-    private int buffer[][];
 
-
-    Interfata(){
-        initializeGUI();
+    Interfata(State s){
+        State new_state=s;
+        initializeGUI(new_state);
     }
 
     //initializare tabla de sah
@@ -75,7 +74,7 @@ public class Interfata {
         gui.add(boardConstrain);
     }
 
-    public final void initializeGUI() {
+    public final void initializeGUI(State new_state) {
         createImages();
 
 
@@ -87,14 +86,11 @@ public class Interfata {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setupNewGame();
+                setupNewGame(new_state);
             }
         };
         tools.add(newGameAction);
-//        tools.add(new JButton("Save")); // TODO - add functionality!
-//        tools.add(new JButton("Restore")); // TODO - add functionality!
         tools.addSeparator();
-//        tools.add(new JButton("Resign")); // TODO - add functionality!
         tools.addSeparator();
         tools.add(message);
 
@@ -145,88 +141,72 @@ public class Interfata {
         }
     }
 
-    public void clearBoard(){
-        chessBoard.repaint();
-    }
-
-    private void setupNewGame() {
-        message.setText("Make your move!");
-        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][0].setIcon(new ImageIcon(
-                    chessPieceImages[BLACK][STARTING_ROW[ii]]));
-        }
-        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][1].setIcon(new ImageIcon(
-                    chessPieceImages[BLACK][PAWN]));
-        }
-        // set up the white pieces
-        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][2].setIcon(new ImageIcon(
-                    chessPieceImages[WHITE][PAWN]));
-        }
-        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][3].setIcon(new ImageIcon(
-                    chessPieceImages[WHITE][STARTING_ROW[ii]]));
-        }
-    }
-
-//    public void setupNewGame(State s) {
-//        message.setText("Make your move!");
-//        for(int i=0;i<4;i++)
-//            for(int j=0;j<4;j++)
-//                if(s.board[i][j]!=0)
-//                    chessBoardSquares[i][j].setIcon(new ImageIcon(chessPieceImages[i/4][STARTING_ROW[j%4]]));
+//    public void clearBoard(){
+//        chessBoard.validate();
+//        chessBoard.repaint();
+//        chessBoard.validate();
 //    }
+
+//    private void setupNewGame() {
+//        message.setText("Make your move!");
+//        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
+//            chessBoardSquares[ii][0].setIcon(new ImageIcon(
+//                    chessPieceImages[BLACK][STARTING_ROW[ii]]));
+//        }
+//        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
+//            chessBoardSquares[ii][1].setIcon(new ImageIcon(
+//                    chessPieceImages[BLACK][PAWN]));
+//        }
+//        // set up the white pieces
+//        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
+//            chessBoardSquares[ii][2].setIcon(new ImageIcon(
+//                    chessPieceImages[WHITE][PAWN]));
+//        }
+//        for (int ii = 0; ii < STARTING_ROW.length; ii++) {
+//            chessBoardSquares[ii][3].setIcon(new ImageIcon(
+//                    chessPieceImages[WHITE][STARTING_ROW[ii]]));
+//        }
+//    }
+
+    public void setupNewGame(State s) {
+        message.setText("Make your move!");
+        for(int i=0;i<4;i++)
+            for(int j=0;j<4;j++)
+                if(s.board[i][j]!=0)
+                    chessBoardSquares[j][i].setIcon(new ImageIcon(chessPieceImages[s.board[i][j]]));
+    }
 
     private void createImages() {
         try {
+            int kk=1;
             URL url = new URL("http://i.stack.imgur.com/memI0.png");
             BufferedImage bi = ImageIO.read(url);
-            for (int ii = 0; ii < 2; ii++) {
-                for (int jj = 0; jj < 4; jj++) {
-                    chessPieceImages[ii][jj] = bi.getSubimage(
+            for (int ii = 1; ii >= 0; ii--) {
+                for (int jj = 3; jj >= 0; jj--) {
+                    chessPieceImages[kk++] = bi.getSubimage(
                             (jj+2) * 64, ii * 64, 64, 64);
                 }
             }
+            Image aux = chessPieceImages[3];
+            chessPieceImages[3]=chessPieceImages[2];
+            chessPieceImages[2]=aux;
+
+            aux = chessPieceImages[7];
+            chessPieceImages[7]=chessPieceImages[6];
+            chessPieceImages[6]=aux;
+
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-//    private void createImages() {
-//        try {
-//            URL url = new URL("http://i.stack.imgur.com/memI0.png");
-//            BufferedImage bi = ImageIO.read(url);
-//            for (int ii = 0; ii < 2; ii++) {
-//                for (int jj = 0; jj < 4; jj++) {
-//                    buffer[ii][jj] = bi.getSubimage(
-//                            (jj+2) * 64, ii * 64, 64, 64);
-//                }
-//
-//            }
-//            for(int i=0;i<4;i++)
-//            {
-//                chessPieceImages[1][i]=buffer[0][i];
-//                chessPieceImages[0][i]=buffer[1][i];
-//            }
-//
-//            chessPieceImages[0][3]=buffer[1][0];
-//            chessPieceImages[0][0]=buffer[1][3];
-//            chessPieceImages[1][3]=buffer[0][0];
-//            chessPieceImages[1][0]=buffer[0][3];
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//    }
-
     public final JComponent getGui(){
         return gui;
     }
 
-    public void putPiece(MouseEvent event){
+    public void setPiece(MouseEvent event){
 
     }
 
